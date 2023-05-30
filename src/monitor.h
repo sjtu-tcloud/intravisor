@@ -85,6 +85,9 @@
 #define LKL_DEV_BLK_STATUS_IOERR	1
 #define LKL_DEV_BLK_STATUS_UNSUP	2
 
+#define	CHERI_PERM_CCALL			(1 << 8)	/* 0x00000100 */
+
+static int counter = 1;
 
 //////////////////
 #define	CHERI_CAP_PRINT(cap) do {					\
@@ -93,7 +96,7 @@
       (uintmax_t)cheri_getsealed(cap),				\
       (uintmax_t)cheri_getperm(cap),				\
       (uintmax_t)cheri_gettype(cap));				\
-  printf("\tbase %016jx length %016jx ofset %016jx\n",				\
+  printf("\tbase %016jx length %016jx offset %016jx\n",				\
       (uintmax_t)cheri_getbase(cap),				\
       (uintmax_t)cheri_getlen(cap),				\
       (uintmax_t)cheri_getoffset(cap));				\

@@ -41,12 +41,12 @@ void *init_thread(void *arg) {
 	char *cenv = (char *) (sp_read -  4096*3); //originally, here was *2, but networking corrupts this memory
 	volatile unsigned long *sp = (sp_read -  4096*4);//I don't know why, but without volatile sp gets some wrong value after initing CENV in -O2
 
-	printf("target SP = %lx, old TP = %lx sp_read = %p, me->stacl = %p, getSP()=%p, me->c_tp = %p\n", sp, getTP(), sp_read, me->stack,getSP(), me->c_tp);
+	// printf("target SP = %lx, old TP = %lx sp_read = %p, me->stacl = %p, getSP()=%p, me->c_tp = %p\n", sp, getTP(), sp_read, me->stack,getSP(), me->c_tp);
 	int cenv_size = 0;
 	sp[0] = me->argc;
 	sp[1] = (unsigned long) (mon_to_comp(argv1, me->sbox));
 	int i;
-	for(i = 1; i < me->argc; i++) {
+	for(i = 1; i < me->argc; i++) { 
 		printf("[%d] '%s'\n", i, me->argv[i]);
 
 		int tmp_add = snprintf(&cenv[cenv_size], 128, "%s\0", me->argv[i]);
@@ -59,7 +59,7 @@ void *init_thread(void *arg) {
 	}
 	sp[i+1] = 0; //terminator
 	int ienv = i + 2;
-	printf("&env0 = %p, &env1=%p\n", &sp[ienv], &sp[ienv+1]);
+	// printf("&env0 = %p, &env1=%p\n", &sp[ienv], &sp[ienv+1]);
 	sp[ienv++] = mon_to_comp(lc1, me->sbox);
 	sp[ienv++] = mon_to_comp(env1, me->sbox);
 	sp[ienv++] = mon_to_comp(env2, me->sbox);
@@ -69,7 +69,7 @@ void *init_thread(void *arg) {
 	sp[ienv++] = 0;
 
 	size_t *auxv = &sp[ienv];
-	printf("%d sp = %p\n", __LINE__, sp);
+	// printf("%d sp = %p\n", __LINE__, sp);
 
 	if(strlen(me->sbox->disk_image)) {
 		me->sbox->lkl_disk.fd = open(me->sbox->disk_image, O_RDWR);
@@ -146,35 +146,44 @@ extern void __inline__ cinv(void *, void *, void *, void *, void *, void *, void
 	struct cinv_s {
 		void *__capability caps[10];
 	} cinv_args;
-//
+
+	// cinv_args.caps[0] = sealed_codecap;
+	// printf("ca0: sealed COMP PPC\n");
+	// CHERI_CAP_PRINT(cinv_args.caps[0]);
+
+	// cinv_args.caps[1] = sealed_datacap;
+	// printf("ca1: sealed COMP DDC\n");
+	// CHERI_CAP_PRINT(cinv_args.caps[1]);
+
+	// cinv_args.caps[2] = dcap;
+	// printf("ca2: COMP DDC\n");
+	// CHERI_CAP_PRINT(cinv_args.caps[2]);
+
+	// cinv_args.caps[3] = sealed_codecapt;
+	// printf("ca3: sealed HC PCC\n");
+	// CHERI_CAP_PRINT(cinv_args.caps[3]);
+
+	// cinv_args.caps[4] = sealed_datacapt;
+	// printf("ca4: sealed HC DDC (mon.DDC)\n");
+	// CHERI_CAP_PRINT(cinv_args.caps[4]);
+
+	// cinv_args.caps[5] = sealed_codecapt2;
+	// printf("ca5: sealed OCALL PCC \n");
+	// CHERI_CAP_PRINT(cinv_args.caps[5]);
+
+	// cinv_args.caps[6] = sealed_ret_from_mon;
+	// printf("ca6: sealed ret from mon\n");
+	// CHERI_CAP_PRINT(cinv_args.caps[6]);
+
 	cinv_args.caps[0] = sealed_codecap;
-	printf("ca0: sealed COMP PPC\n");
-	CHERI_CAP_PRINT(cinv_args.caps[0]);
-//
 	cinv_args.caps[1] = sealed_datacap;
-	printf("ca1: sealed COMP DDC\n");
-	CHERI_CAP_PRINT(cinv_args.caps[1]);
-//
 	cinv_args.caps[2] = dcap;
-	printf("ca2: COMP DDC\n");
-	CHERI_CAP_PRINT(cinv_args.caps[2]);
-//
 	cinv_args.caps[3] = sealed_codecapt;
-	printf("ca3: sealed HC PCC\n");
-	CHERI_CAP_PRINT(cinv_args.caps[3]);
-//
 	cinv_args.caps[4] = sealed_datacapt;
-	printf("ca4: sealed HC DDC (mon.DDC)\n");
-	CHERI_CAP_PRINT(cinv_args.caps[4]);
-//
 	cinv_args.caps[5] = sealed_codecapt2;
-	printf("ca5: sealed OCALL PCC \n");
-	CHERI_CAP_PRINT(cinv_args.caps[5]);
-//
 	cinv_args.caps[6] = sealed_ret_from_mon;
-	printf("ca6: sealed ret from mon\n");
-	CHERI_CAP_PRINT(cinv_args.caps[6]);
-//
+
+
 
 	if(me->sbox->pure) {
 
@@ -194,8 +203,8 @@ extern void __inline__ cinv(void *, void *, void *, void *, void *, void *, void
 
 
 extern void cinv(void *, void *);
-	printf("HW: sp = %p, tp = %p\n", sp, me->c_tp);
-	printf("-----------------------------------------------\n");
+	// printf("HW: sp = %p, tp = %p\n", sp, me->c_tp);
+	// printf("-----------------------------------------------\n");
 	__asm__ __volatile__("mv sp, %0;" :: "r"(sp) : "memory");
 	__asm__ __volatile__("mv tp, %0;" :: "r"(me->c_tp) : "memory");
 	cinv(
@@ -667,7 +676,7 @@ int main(int argc, char *argv[]) {
 			}
 		}
 
-		printf("***************** ALL cVMs loaded ***************\n");
+		printf("*****************   ALL cVMs loaded   ***************\n");
 			void *cret;
 			pthread_t tid;
 		for (struct cvm *f = state->flist; f; f = f->next) {

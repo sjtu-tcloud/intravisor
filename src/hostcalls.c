@@ -560,6 +560,18 @@ printf("EXEC FREE %p, who called?\n", a0); while(1);
 		case 413:
 			ret = (long) host_fetch_cap_call(a0, comp_to_mon(a1, ct->sbox), comp_to_mon(a2, ct->sbox));
 			break;
+		case 414:
+			ret = (long) host_cap_map(comp_to_mon(a0, ct->sbox), comp_to_mon(a1, ct->sbox));
+			break;
+		case 415:
+			ret = (long) host_cap_unmap(comp_to_mon(a0, ct->sbox));
+			break;
+		case 416:
+			ret = (long) host_cap_list(ct->sbox->cmp_begin);
+			break;
+		case 417:
+			ret = (long) host_cvm_region_prb(comp_to_mon(a0, ct->sbox), comp_to_mon(a1, ct->sbox), comp_to_mon(a2, ct->sbox));
+			break;
 
 
 //#define USE_HOST_NET

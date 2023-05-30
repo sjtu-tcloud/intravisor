@@ -103,7 +103,9 @@ int host_reg_cap(void *ptr, long size, void *location) {
 #ifndef SIM
 //todo: internally, datacap_create default cap of monitor. it might be slightly better to use caps of the target isolation layer
 	void * __capability dcap = datacap_create(ptr, (void *) ((unsigned long) ptr + size));
-//	CHERI_CAP_PRINT(dcap);
+	CHERI_CAP_PRINT(dcap);
+	printf("\n");
+
 #else
 	void *dcap = ptr;
 #endif
